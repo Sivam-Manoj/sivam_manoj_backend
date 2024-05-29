@@ -8,35 +8,34 @@ const TaskRoutes = require("./Routes/TaskRoutes");
 const cookieParser = require("cookie-parser");
 
 const app = express();
-//port
-const port = process.env.PORT || 3001;
-//middleware
 
+// port
+const port = process.env.PORT || 3001;
+
+// middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-//connecting database
+// Enable CORS for all routes before defining them
+app.use(cors({
+  origin: 'http://localhost:5173', // Adjust this to your frontend's URL
+  credentials: true, // Enable sending cookies from the frontend
+}));
+
+// connecting database
 ConnectMongoDb();
 
-//routes
+// routes
 app.use("/user", UserRoutes);
 app.use("/task", TaskRoutes);
 
-const whitelist = ["http://localhost:5173"];
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
-};
+app.get("/get-cookie", (req, res) => {
+  res.cookie("token", "niiwcbicbwiucbwicubwiuc", { httpOnly: true });
+  res.send("Cookie is set");
+});
 
-app.use(cors(corsOptions));
-//error handling using express-middleware
+// error handling using express-middleware
 app.use(ErrorHandler);
 
 app.listen(port, () => {
