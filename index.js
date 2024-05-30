@@ -30,10 +30,6 @@ ConnectMongoDb();
 app.use("/user", UserRoutes);
 app.use("/task", TaskRoutes);
 
-app.get("/get-cookie", (req, res) => {
-  res.cookie("token", "niiwcbicbwiucbwicubwiuc", { httpOnly: true });
-  res.send("Cookie is set");
-});
 
 // error handling using express-middleware
 app.use(ErrorHandler);
